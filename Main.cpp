@@ -1,22 +1,22 @@
-#include "Game.h"
-#include "Dialog.h"
 #include "Attr.h"
-#include "FileUtil.h"
+#include "Dialog.h"
+#include "GameUtil.h"
+#include "Game.h"
 #include "SingleApplication"
 
 #include <QDir>
 #include <QFontDatabase>
-#include <QTranslator>
 #include <QLibraryInfo>
 #include <QTimer>
+#include <QTranslator>
 
 #ifdef Q_OS_WINDOWS
 #include <Windows.h>
 #endif
 
-void raiseWidget(QWidget* widget) {
+static void raiseWidget(QWidget *widget) {
 #ifdef Q_OS_WINDOWS
-    HWND hwnd = (HWND)widget->winId();
+    HWND hwnd = (HWND) widget->winId();
 
     // check if widget is minimized to Windows task bar
     if (::IsIconic(hwnd)) {
@@ -47,19 +47,17 @@ int main(int argc, char *argv[]) {
 
     app.setStyle("Fusion");
     app.setStyleSheet(FileUtil::readAll(":/conf/Styles.qss"));
-    QObject::connect(&app, &QApplication::aboutToQuit, [] {
-        Attr::get().save();
-    });
+    QObject::connect(&app, &QApplication::aboutToQuit, &Attr::saveAttr);
 
     QFontDatabase::addApplicationFont(":/fonts/MontserratAlternates-Medium.ttf");
     QFontDatabase::addApplicationFont(":/fonts/ZCOOLKuaiLe-Regular.ttf");
 
-    bool loaded = Attr::get().load();
+    const bool loaded = Attr::loadAttr();
 
     QTranslator baseTrans, appTrans;
-    if (Attr::get().lang != Lang::ENGLISH) {
-        QString basePath = QLibraryInfo::path(QLibraryInfo::TranslationsPath);
-        QString code = Lang::getLangTerrCode(Attr::get().lang);
+    if (Attr::getSettings().lang != Lang::ENGLISH) {
+        const QString basePath = QLibraryInfo::path(QLibraryInfo::TranslationsPath);
+        const QString code = Lang::getLangTerrCode(Attr::getSettings().lang);
 
         if (baseTrans.load("qtbase_" + code, basePath)) {
             app.installTranslator(&baseTrans);
@@ -73,11 +71,13 @@ int main(int argc, char *argv[]) {
     game.show();
 
 #ifdef Q_OS_WINDOWS
-    QObject::connect(&app, &SingleApplication::receivedMessage,
-                     &game, [&game] () { raiseWidget(&game); } );
+    QObject::connect(&app, &SingleApplication::receivedMessage, &game, [&game]() {
+        raiseWidget(&game);
+    });
 #else
-    QObject::connect(&app, &SingleApplication::instanceStarted,
-                     &game, [&game] () { raiseWidget(&game); } );
+    QObject::connect(&app, &SingleApplication::instanceStarted, &game, [&game]() {
+        raiseWidget(&game);
+    });
 #endif
 
     if (loaded) {

@@ -12,11 +12,10 @@ SOURCES += \
     Attr.cpp \
     Board.cpp \
     Dialog.cpp \
-    FileUtil.cpp \
     Game.cpp \
     GameAI.cpp \
     GameBar.cpp \
-    IconUtil.cpp \
+    GameUtil.cpp \
     Main.cpp \
     ScoreBoard.cpp \
     Square.cpp
@@ -25,15 +24,14 @@ HEADERS += \
     Attr.h \
     Board.h \
     Dialog.h \
-    FileUtil.h \
     Game.h \
     GameAI.h \
     GameBar.h \
-    IconUtil.h \
+    GameUtil.h \
     ScoreBoard.h \
     Square.h
 
-include(singleapplication/singleapplication.pri)
+include(SingleApplication-3.5.2/singleapplication.pri)
 DEFINES += QAPPLICATION_CLASS=QApplication
 
 TARGET = "Tic Tac Toe"

@@ -1,57 +1,72 @@
 #pragma once
 
-#include <QDialog>
 #include <QBoxLayout>
-#include <QKeyEvent>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QDialog>
+#include <QHash>
+#include <QKeyEvent>
 #include <QPushButton>
 #include <QTextBrowser>
-#include <QHash>
 
 class Game;
 
 /**
- * @brief Creates a base dialog for game customization and displaying info.
+ * @brief Base dialog class for game customization and information display.
+ *
+ * Provides a reusable foundation for dialogs used in the game, such as
+ * settings configuration or about/info screens.
  */
 class Dialog : public QDialog {
     Q_OBJECT
 
 public:
-    Dialog(Game *game, const QIcon &icon, const QString &title);
+    explicit Dialog(Game *game, const QIcon &icon, const QString &title);
     ~Dialog();
 
 protected:
+    void keyPressEvent(QKeyEvent *event) override;
+
     Game *game;
     QVBoxLayout *mainLayout;
     QHBoxLayout *buttonLayout;
     QPushButton *okButton;
-
-    void keyPressEvent(QKeyEvent *event) override;
 };
 
+/**
+ * @brief Dialog for configuring game settings.
+ *
+ * Inherits from Dialog and provides user interface elements for customizing
+ * gameplay options such as language, animations, and game mode.
+ */
 class SettingsDialog : public Dialog {
     Q_OBJECT
 
 public:
-    SettingsDialog(Game *game);
+    explicit SettingsDialog(Game *game);
     ~SettingsDialog();
 
 private:
-    QHash<QCheckBox *, bool *> boxes;
-    QComboBox *langBox;
-    QComboBox *resetBox;
-
     QVBoxLayout *newGroup(const QString &title);
     void addCheckBox(QLayout *layout, const QString &text, bool &state);
     void applySettings();
+
+    QHash<QCheckBox *, bool *> boxes;
+    QComboBox *langBox;
+    QComboBox *resetBox;
 };
 
+/**
+ * @brief Dialog for displaying help and instructions.
+ *
+ * Inherits from Dialog and provides information about how to play the game,
+ * rules, and general usage guidance for the player.
+ */
 class HelpDialog : public Dialog {
     Q_OBJECT
 
 public:
-    HelpDialog(Game *game);
+    explicit HelpDialog(Game *game);
     ~HelpDialog();
 
 private:

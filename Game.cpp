@@ -1,9 +1,9 @@
 #include "Game.h"
-#include "GameBar.h"
-#include "Board.h"
-#include "ScoreBoard.h"
 #include "Attr.h"
-#include "IconUtil.h"
+#include "GameUtil.h"
+#include "Board.h"
+#include "GameBar.h"
+#include "ScoreBoard.h"
 #include "Square.h"
 
 #include <QTimer>
@@ -50,7 +50,7 @@ ScoreBoard *Game::getScoreBoard() {
 }
 
 void Game::restart() {
-    Attr::get().resetProgress();
+    Attr::resetProgress();
 
     mainLayout->removeWidget(board);
     board->deleteLater();
@@ -65,33 +65,31 @@ void Game::restart() {
 }
 
 void Game::loadSave() {
-    if (Attr::get().ended) {
+    if (Attr::getProgress().ended) {
         restart();
         return;
     }
 
     for (int i = 0; i < 9; ++i) {
-        SquareIcon icon = Attr::get().board[i];
+        SquareIcon icon = Attr::getProgress().board[i];
         if (icon != SquareIcon::EMPTY) {
-            board->place(i, Board::getSquareIcon(icon), false);
+            board->place(i, Square::getIcon(icon), false);
         }
     }
 
     scoreBoard->updateHeaders();
     scoreBoard->updateValues();
-    scoreBoard->setVisible(Attr::get().showScores);
+    scoreBoard->setVisible(Attr::getSettings().showScores);
 
     resumeRound();
     setFixedSize(sizeHint());
 }
 
 void Game::resumeRound() {
-    bool xTurn = Attr::get().xTurn;
+    bool xTurn = Attr::getProgress().xTurn;
     gameBar->setInfoText(xTurn ? tr("X's turn") : tr("O's turn"));
 
-    if (!xTurn && !Attr::get().twoPlayer) {
-        QTimer::singleShot(500, this, [this] {
-            board->placeO();
-        });
+    if (!xTurn && !Attr::getSettings().twoPlayer) {
+        QTimer::singleShot(500, this, [this] { board->placeO(); });
     }
 }
