@@ -7,11 +7,18 @@ class GameBar;
 class Board;
 class ScoreBoard;
 
+/**
+ * @brief Main window for the Tic-Tac-Toe game.
+ *
+ * Hosts and manages the core UI components including the game bar,
+ * game board, and scoreboard. Handles major game control actions
+ * such as restarting, loading saved data, and resuming rounds.
+ */
 class Game : public QMainWindow {
     Q_OBJECT
 
 public:
-    Game();
+    explicit Game();
     ~Game();
 
     GameBar *getGameBar();

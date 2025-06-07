@@ -1,8 +1,8 @@
 #include "GameBar.h"
-#include "Game.h"
-#include "Dialog.h"
 #include "Attr.h"
-#include "IconUtil.h"
+#include "Dialog.h"
+#include "Game.h"
+#include "GameUtil.h"
 
 GameBar::GameBar(Game *game) : QFrame(game) {
     barLayout = new QHBoxLayout(this);
@@ -48,7 +48,7 @@ void GameBar::setInfoText(const QString &text) {
         return;
     }
 
-    if (Attr::get().animated) {
+    if (Attr::getSettings().animated) {
         typewriteInfo(text);
     } else {
         infoLabel->setText(text);
@@ -85,8 +85,9 @@ void GameBar::typewriteInfo(const QString &text) {
     infoTimer->start(20);
 }
 
-template <typename Callable>
-QPushButton *GameBar::newMenuButton(const QIcon &icon, const QString &tip, const Callable &call) {
+template<typename Callable>
+QPushButton *GameBar::newMenuButton(
+    const QIcon &icon, const QString &tip, const Callable &call) {
     auto button = new QPushButton(icon, "", this);
     button->setToolTip(tip);
     button->setCursor(Qt::PointingHandCursor);

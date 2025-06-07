@@ -1,6 +1,24 @@
 #include "Square.h"
-#include "Board.h"
 #include "Attr.h"
+#include "GameUtil.h"
+#include "Board.h"
+
+const QIcon &Square::getIcon(SquareIcon icon, bool gray) {
+    static const QIcon &X = IconUtil::load(":/icons/X.svg");
+    static const QIcon &X_GRAY = IconUtil::gray(":/icons/X.svg");
+    static const QIcon &O = IconUtil::load(":/icons/O.svg");
+    static const QIcon &O_GRAY = IconUtil::gray(":/icons/O.svg");
+    static const QIcon EMPTY;
+
+    switch (icon) {
+    case SquareIcon::X:
+        return gray ? X_GRAY : X;
+    case SquareIcon::O:
+        return gray ? O_GRAY : O;
+    default:
+        return EMPTY;
+    }
+}
 
 Square::Square(Board *board, int i) : QPushButton(board) {
     setCursor(Qt::PointingHandCursor);
@@ -9,9 +27,9 @@ Square::Square(Board *board, int i) : QPushButton(board) {
             return;
         }
 
-        if (Attr::get().xTurn) {
+        if (Attr::getProgress().xTurn) {
             board->placeX(i);
-        } else if (Attr::get().twoPlayer) {
+        } else if (Attr::getSettings().twoPlayer) {
             board->placeO(i);
         }
     });

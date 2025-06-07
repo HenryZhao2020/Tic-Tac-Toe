@@ -2,19 +2,24 @@
 #include "Attr.h"
 
 const QList<QList<int>> GameAI::WIN_SEQS = {
-    {0, 1, 2}, {3, 4, 5}, {6, 7, 8},  // Rows
-    {0, 3, 6}, {1, 4, 7}, {2, 5, 8},  // Columns
-    {0, 4, 8}, {2, 4, 6}              // Diagonals
+    {0, 1, 2},  // Row 1
+    {3, 4, 5},  // Row 2
+    {6, 7, 8},  // Row 3
+    {0, 3, 6},  // Col 1
+    {1, 4, 7},  // Col 2
+    {2, 5, 8},  // Col 3
+    {0, 4, 8},  // Diagonal 1
+    {2, 4, 6},  // Diagonal 2
 };
 
-QList<SquareIcon> &GameAI::board = Attr::get().board;
+GameAI::GameAI(QList<SquareIcon> &board) : board{board} {}
 
-// Function to check if a player has won
+GameAI::~GameAI() {}
+
 SquareIcon GameAI::getWinner() {
     for (const auto &seq : WIN_SEQS) {
-        if (board[seq[0]] == board[seq[1]] &&
-            board[seq[1]] == board[seq[2]] &&
-            board[seq[0]] != SquareIcon::EMPTY) {
+        if (board[seq[0]] == board[seq[1]] && board[seq[1]] == board[seq[2]]
+            && board[seq[0]] != SquareIcon::EMPTY) {
             return board[seq[0]];
         }
     }
@@ -23,26 +28,18 @@ SquareIcon GameAI::getWinner() {
 
 QList<int> GameAI::getWinSeq() {
     for (const auto &seq : WIN_SEQS) {
-        if (board[seq[0]] == board[seq[1]] &&
-            board[seq[1]] == board[seq[2]] &&
-            board[seq[0]] != SquareIcon::EMPTY) {
+        if (board[seq[0]] == board[seq[1]] && board[seq[1]] == board[seq[2]]
+            && board[seq[0]] != SquareIcon::EMPTY) {
             return seq;
         }
     }
     return {};
 }
 
-// Function to check for a draw
 bool GameAI::isDraw() {
-    for (SquareIcon icon : board) {
-        if (icon == SquareIcon::EMPTY) {
-            return false;
-        }
-    }
-    return true;
+    return !board.contains(SquareIcon::EMPTY);
 }
 
-// Function to find the best move
 int GameAI::getBestMove() {
     int bestMove = -1;
     int bestScore = INT_MIN;

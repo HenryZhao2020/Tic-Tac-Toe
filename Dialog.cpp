@@ -1,19 +1,18 @@
 #include "Dialog.h"
+#include "Attr.h"
+#include "Board.h"
+#include "GameUtil.h"
 #include "Game.h"
 #include "GameBar.h"
-#include "Board.h"
 #include "ScoreBoard.h"
-#include "Attr.h"
-#include "FileUtil.h"
-#include "IconUtil.h"
 
+#include <QFile>
 #include <QFrame>
 #include <QGroupBox>
-#include <QFile>
 #include <QProcess>
 
 Dialog::Dialog(Game *game, const QIcon &icon, const QString &title)
-    : QDialog(game), game(game) {
+    : QDialog(game), game{game} {
     setWindowIcon(icon);
     setWindowTitle(title);
     setModal(true);
@@ -49,13 +48,13 @@ void Dialog::keyPressEvent(QKeyEvent *event) {
 SettingsDialog::SettingsDialog(Game *game)
     : Dialog(game, IconUtil::load(":/icons/Settings.svg"), tr("Settings")) {
     auto gameGroup = newGroup(tr("Game"));
-    addCheckBox(gameGroup, tr("Two Player Mode"), Attr::get().twoPlayer);
-    addCheckBox(gameGroup, tr("Enable Visual Effects"), Attr::get().animated);
-    addCheckBox(gameGroup, tr("Display Scores on Bottom"), Attr::get().showScores);
+    addCheckBox(gameGroup, tr("Two Player Mode"), Attr::getSettings().twoPlayer);
+    addCheckBox(gameGroup, tr("Enable Visual Effects"), Attr::getSettings().animated);
+    addCheckBox(gameGroup, tr("Display Scores on Bottom"), Attr::getSettings().showScores);
 
     langBox = new QComboBox(this);
     langBox->addItems(Lang::getLangNames());
-    langBox->setCurrentIndex(Attr::get().lang);
+    langBox->setCurrentIndex(Attr::getSettings().lang);
 
     auto langGroup = newGroup(tr("Language"));
     langGroup->addWidget(langBox);
@@ -107,22 +106,22 @@ void SettingsDialog::applySettings() {
         QFile::remove("TTT_Data");
         QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
     } else if (resetIndex == 2) {
-        Attr::get().resetSettings();
+        Attr::resetSettings();
     } else if (resetIndex == 3) {
-        Attr::get().resetStats();
+        Attr::resetStats();
         game->getScoreBoard()->updateValues();
     }
 
     game->resumeRound();
 
     game->getScoreBoard()->updateHeaders();
-    game->getScoreBoard()->setVisible(Attr::get().showScores);
+    game->getScoreBoard()->setVisible(Attr::getSettings().showScores);
     game->centralWidget()->adjustSize();
     game->setFixedSize(game->sizeHint());
 
-    int oldLang = Attr::get().lang;
+    int oldLang = Attr::getSettings().lang;
     int newLang = langBox->currentIndex();
-    Attr::get().lang = Lang::Name(newLang);
+    Attr::getSettings().lang = Lang::Name(newLang);
 
     if (newLang != oldLang) {
         qApp->quit();

@@ -1,6 +1,6 @@
 #include "ScoreBoard.h"
-#include "Game.h"
 #include "Attr.h"
+#include "Game.h"
 
 #include <QGridLayout>
 
@@ -36,13 +36,13 @@ ScoreBoard::ScoreBoard(Game *game) : QFrame(game) {
 ScoreBoard::~ScoreBoard() {}
 
 void ScoreBoard::updateHeaders() {
-    bool twoPlayer = Attr::get().twoPlayer;
+    bool twoPlayer = Attr::getSettings().twoPlayer;
     xHead->setText(twoPlayer ? tr("PLAYER 1") : tr("YOU"));
     oHead->setText(twoPlayer ? tr("PLAYER 2") : tr("AI"));
 }
 
 void ScoreBoard::updateValues() {
-    xVal->setText(QString::number(Attr::get().xPoint));
-    tieVal->setText(QString::number(Attr::get().tiePoint));
-    oVal->setText(QString::number(Attr::get().oPoint));
+    xVal->setText(QString::number(Attr::getStats().xPoint));
+    tieVal->setText(QString::number(Attr::getStats().tiePoint));
+    oVal->setText(QString::number(Attr::getStats().oPoint));
 }

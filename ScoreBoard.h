@@ -5,11 +5,15 @@
 
 class Game;
 
+/**
+ * @brief Displays, from left to right order, the current score of player X, number of ties,
+ * and score of player O.
+ */
 class ScoreBoard : public QFrame {
     Q_OBJECT
 
 public:
-    ScoreBoard(Game *game);
+    explicit ScoreBoard(Game *game);
     ~ScoreBoard();
 
     void updateHeaders();

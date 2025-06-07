@@ -2,14 +2,21 @@
 
 #include <QPushButton>
 #include <QTimer>
+#include <QIcon>
 
 class Board;
+enum class SquareIcon;
 
+/**
+ * @brief A clickable square that displays an 'X' or 'O' icon to indicate player turns.
+ */
 class Square : public QPushButton {
     Q_OBJECT
 
 public:
-    Square(Board *board, int i);
+    static const QIcon &getIcon(SquareIcon icon, bool gray = false);
+
+    explicit Square(Board *board, int i);
     ~Square();
 
     void zoomIn(int maxSize);

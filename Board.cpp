@@ -1,16 +1,18 @@
 #include "Board.h"
-#include "Game.h"
-#include "GameBar.h"
-#include "Square.h"
-#include "ScoreBoard.h"
 #include "Attr.h"
+#include "GameUtil.h"
+#include "Game.h"
 #include "GameAI.h"
-#include "IconUtil.h"
+#include "GameBar.h"
+#include "ScoreBoard.h"
+#include "Square.h"
 
 #include <QGridLayout>
 
+GameAI Board::ai {Attr::getProgress().board};
+
 Board::Board(Game *game)
-    : QFrame(game), game(game), gameBar(game->getGameBar()) {
+    : QFrame(game), game{game}, gameBar{game->getGameBar()} {
     setFrozen(false);
 
     auto boardLayout = new QGridLayout(this);
@@ -40,23 +42,6 @@ Board::Board(Game *game)
 
 Board::~Board() {}
 
-const QIcon &Board::getSquareIcon(SquareIcon icon, bool gray) {
-    static const QIcon &X = IconUtil::load(":/icons/X.svg");
-    static const QIcon &X_GRAY = IconUtil::gray(":/icons/X.svg");
-    static const QIcon &O = IconUtil::load(":/icons/O.svg");
-    static const QIcon &O_GRAY = IconUtil::gray(":/icons/O.svg");
-    static const QIcon EMPTY;
-
-    switch (icon) {
-    case SquareIcon::X:
-        return gray ? X_GRAY : X;
-    case SquareIcon::O:
-        return gray ? O_GRAY : O;
-    default:
-        return EMPTY;
-    }
-}
-
 void Board::place(int i, const QIcon &icon, bool animated) {
     setFrozen(true);
 
@@ -74,15 +59,13 @@ void Board::place(int i, const QIcon &icon, bool animated) {
         squares[i]->setIconSize(QSize(size, size));
     }
 
-    QTimer::singleShot(500, this, [this] {
-        setFrozen(false);
-    });
+    QTimer::singleShot(500, this, [this] { setFrozen(false); });
 }
 
 void Board::placeX(int i) {
-    place(i, getSquareIcon(SquareIcon::X), Attr::get().animated);
-    Attr::get().board[i] = SquareIcon::X;
-    Attr::get().xTurn = false;
+    place(i, Square::getIcon(SquareIcon::X), Attr::getSettings().animated);
+    Attr::getProgress().board[i] = SquareIcon::X;
+    Attr::getProgress().xTurn = false;
 
     if (isRoundEnded()) {
         endRound();
@@ -90,35 +73,29 @@ void Board::placeX(int i) {
     }
 
     gameBar->setInfoVisible(false);
-    QTimer::singleShot(500, this, [this] {
-        gameBar->setInfoText(tr("O's turn"));
-    });
+    QTimer::singleShot(500, this, [this] { gameBar->setInfoText(tr("O's turn")); });
 
-    if (!Attr::get().twoPlayer) {
-        QTimer::singleShot(1000, this, [this] {
-            placeO();
-        });
+    if (!Attr::getSettings().twoPlayer) {
+        QTimer::singleShot(1000, this, [this] { placeO(); });
     }
 }
 
 void Board::placeO(int i) {
     if (i == -1) {
-        i = GameAI::getBestMove();
+        i = ai.getBestMove();
     }
 
-    place(i, getSquareIcon(SquareIcon::O), Attr::get().animated);
-    Attr::get().board[i] = SquareIcon::O;
-    Attr::get().xTurn = true;
+    place(i, Square::getIcon(SquareIcon::O), Attr::getSettings().animated);
+    Attr::getProgress().board[i] = SquareIcon::O;
+    Attr::getProgress().xTurn = true;
 
     if (isRoundEnded()) {
         endRound();
         return;
     }
 
-    gameBar->setInfoVisible(!Attr::get().twoPlayer);
-    QTimer::singleShot(500, this, [this] {
-        gameBar->setInfoText(tr("X's turn"));
-    });
+    gameBar->setInfoVisible(!Attr::getSettings().twoPlayer);
+    QTimer::singleShot(500, this, [this] { gameBar->setInfoText(tr("X's turn")); });
 }
 
 void Board::setFrozen(bool frozen) {
@@ -130,21 +107,21 @@ bool Board::isFrozen() {
 }
 
 bool Board::isRoundEnded() {
-    winner = GameAI::getWinner();
-    return winner != SquareIcon::EMPTY || GameAI::isDraw();
+    winner = ai.getWinner();
+    return winner != SquareIcon::EMPTY || ai.isDraw();
 }
 
 void Board::endRound() {
     setFrozen(false);
-    Attr::get().ended = true;
+    Attr::getProgress().ended = true;
 
-    const QList<int> &winSeq = GameAI::getWinSeq();
+    const QList<int> &winSeq = ai.getWinSeq();
     for (int i = 0; i < 9; ++i) {
-        SquareIcon icon = Attr::get().board[i];
+        SquareIcon icon = Attr::getProgress().board[i];
         if (icon == SquareIcon::X && !winSeq.contains(i)) {
-            squares[i]->setIcon(getSquareIcon(SquareIcon::X, true));
+            squares[i]->setIcon(Square::getIcon(SquareIcon::X, true));
         } else if (icon == SquareIcon::O && !winSeq.contains(i)) {
-            squares[i]->setIcon(getSquareIcon(SquareIcon::O, true));
+            squares[i]->setIcon(Square::getIcon(SquareIcon::O, true));
         } else {
             disconnect(squares[i], &Square::clicked, nullptr, nullptr);
         }
@@ -161,16 +138,16 @@ void Board::endRound() {
     if (winner == SquareIcon::X) {
         icon = IconUtil::load(":/icons/Win.svg");
         text = tr("The winner is X!");
-        ++Attr::get().xPoint;
+        ++Attr::getStats().xPoint;
     } else if (winner == SquareIcon::O) {
-        bool twoPlayer = Attr::get().twoPlayer;
+        bool twoPlayer = Attr::getSettings().twoPlayer;
         icon = IconUtil::load(twoPlayer ? ":/icons/Win.svg" : ":/icons/AI.svg");
         text = tr("The winner is O!");
-        ++Attr::get().oPoint;
+        ++Attr::getStats().oPoint;
     } else {
         icon = IconUtil::load(":/icons/Tie.svg");
         text = tr("Tie!");
-        ++Attr::get().tiePoint;
+        ++Attr::getStats().tiePoint;
     }
 
     gameBar->setInfoIcon(icon);
