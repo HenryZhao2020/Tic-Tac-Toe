@@ -33,14 +33,14 @@ static void raiseWidget(QWidget *widget) {
 
 int main(int argc, char *argv[]) {
 #ifdef Q_OS_WINDOWS
-    SingleApplication app(argc, argv, true);
+    SingleApplication app{argc, argv, true};
     if (app.isSecondary()) {
         AllowSetForegroundWindow(DWORD(app.primaryPid()));
         app.sendMessage("RAISE_WIDGET");
         return 0;
     }
 #else
-    SingleApplication app(argc, argv, true);
+    SingleApplication app{argc, argv, true};
 #endif
 
     QDir::setCurrent(app.applicationDirPath());
@@ -52,12 +52,12 @@ int main(int argc, char *argv[]) {
     QFontDatabase::addApplicationFont(":/fonts/MontserratAlternates-Medium.ttf");
     QFontDatabase::addApplicationFont(":/fonts/ZCOOLKuaiLe-Regular.ttf");
 
-    const bool loaded = Attr::loadAttr();
+    const bool loaded{Attr::loadAttr()};
 
     QTranslator baseTrans, appTrans;
     if (Attr::getSettings().lang != Lang::ENGLISH) {
-        const QString basePath = QLibraryInfo::path(QLibraryInfo::TranslationsPath);
-        const QString code = Lang::getLangTerrCode(Attr::getSettings().lang);
+        const QString basePath{QLibraryInfo::path(QLibraryInfo::TranslationsPath)};
+        const QString code{LangUtil::getLangCode(Attr::getSettings().lang)};
 
         if (baseTrans.load("qtbase_" + code, basePath)) {
             app.installTranslator(&baseTrans);
@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
     if (loaded) {
         game.loadSave();
     } else {
-        auto dialog = new HelpDialog(&game);
+        auto dialog = new AboutDialog{&game};
         QTimer::singleShot(500, dialog, &Dialog::show);
     }
 
