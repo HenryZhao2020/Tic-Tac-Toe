@@ -1,10 +1,10 @@
 #pragma once
 
 #include <QPushButton>
-#include <QTimer>
 #include <QIcon>
 
 class Board;
+class IconAnimation;
 enum class SquareIcon;
 
 /**
@@ -14,18 +14,15 @@ class Square : public QPushButton {
     Q_OBJECT
 
 public:
-    static const QIcon &getIcon(SquareIcon icon, bool gray = false);
-
     explicit Square(Board *board, int i);
     ~Square();
 
-    void zoomIn(int maxSize);
-    void flash(int maxFlash = 4);
+    void placeIcon(SquareIcon icon, bool animated, bool gray = false);
+    void flash();
 
 private:
-    QTimer *zoomTimer = nullptr;
-    int currSize;
+    static const QIcon &getIcon(SquareIcon icon, bool gray = false);
+    static constexpr double ICON_SCALE{0.70};
 
-    QTimer *flashTimer = nullptr;
-    int currFlash;
+    IconAnimation *animator{nullptr};
 };

@@ -1,13 +1,14 @@
 #include "Square.h"
+#include "Animation.h"
 #include "Attr.h"
 #include "GameUtil.h"
 #include "Board.h"
 
 const QIcon &Square::getIcon(SquareIcon icon, bool gray) {
-    static const QIcon &X = IconUtil::load(":/icons/X.svg");
-    static const QIcon &X_GRAY = IconUtil::gray(":/icons/X.svg");
-    static const QIcon &O = IconUtil::load(":/icons/O.svg");
-    static const QIcon &O_GRAY = IconUtil::gray(":/icons/O.svg");
+    static const QIcon X = IconUtil::load(":/icons/X.svg");
+    static const QIcon X_GRAY = IconUtil::load(":/icons/X_Gray.svg");
+    static const QIcon O = IconUtil::load(":/icons/O.svg");
+    static const QIcon O_GRAY = IconUtil::load(":/icons/O_Gray.svg");
     static const QIcon EMPTY;
 
     switch (icon) {
@@ -20,7 +21,7 @@ const QIcon &Square::getIcon(SquareIcon icon, bool gray) {
     }
 }
 
-Square::Square(Board *board, int i) : QPushButton(board) {
+Square::Square(Board *board, int i) : QPushButton(board), animator{new IconAnimation{this}} {
     setCursor(Qt::PointingHandCursor);
     connect(this, &Square::clicked, this, [board, i] {
         if (board->isFrozen()) {
@@ -36,54 +37,20 @@ Square::Square(Board *board, int i) : QPushButton(board) {
 }
 
 Square::~Square() {
-    if (zoomTimer != nullptr) {
-        zoomTimer->deleteLater();
-    }
+    if (animator) delete animator;
+}
 
-    if (flashTimer != nullptr) {
-        flashTimer->deleteLater();
+void Square::placeIcon(SquareIcon icon, bool animated, bool gray) {
+    setIcon(getIcon(icon, gray));
+
+    const int iconSize = width() * ICON_SCALE;
+    if (animated) {
+        animator->zoomIn(iconSize);
+    } else {
+        setIconSize(QSize(iconSize, iconSize));
     }
 }
 
-void Square::zoomIn(int maxSize) {
-    if (zoomTimer != nullptr) {
-        zoomTimer->deleteLater();
-    }
-    currSize = maxSize % 10;
-    setIconSize(QSize(currSize, currSize));
-
-    zoomTimer = new QTimer(this);
-    connect(zoomTimer, &QTimer::timeout, this, [this, maxSize] {
-        if (currSize >= maxSize) {
-            zoomTimer->deleteLater();
-            zoomTimer = nullptr;
-            return;
-        }
-
-        currSize += maxSize / 10;
-        setIconSize(QSize(currSize, currSize));
-    });
-    zoomTimer->start(10);
-}
-
-void Square::flash(int maxFlash) {
-    if (flashTimer != nullptr) {
-        flashTimer->deleteLater();
-    }
-    currFlash = 0;
-
-    const QIcon &oldIcon = icon();
-    static QIcon blankIcon;
-
-    flashTimer = new QTimer(this);
-    connect(flashTimer, &QTimer::timeout, this, [this, maxFlash, oldIcon] {
-        if (currFlash >= maxFlash) {
-            flashTimer->deleteLater();
-            flashTimer = nullptr;
-            return;
-        }
-
-        setIcon(++currFlash % 2 ? blankIcon : oldIcon);
-    });
-    flashTimer->start(250);
+void Square::flash() {
+    animator->flash();
 }
