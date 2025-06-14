@@ -5,26 +5,35 @@
 enum class SquareIcon;
 
 /**
- * @brief Implements a simple AI for Tic-Tac-Toe using the Minimax algorithm.
+ * @brief Implements a robust AI for Tic-Tac-Toe using the Minimax algorithm.
  *
  * GameAI evaluates the current board state and determines optimal moves.
  * It can identify winning conditions, draw scenarios, and the best next move.
  *
- * The board is passed by reference and expected to have 9 elements representing a 3x3 grid.
+ * The board is expected to contain 9 SquareIcon representing a 3x3 grid.
  */
 class GameAI {
 public:
-    explicit GameAI(QList<SquareIcon> &board);
+    explicit GameAI();
     ~GameAI();
 
     SquareIcon getWinner();
-    QList<int> getWinSeq();
-    bool isDraw();
-    int getBestMove();
+    const QList<int> *getWinSeq() const;
+    bool isDraw() const;
+    bool isRoundEnded();
+
+    int getNextMoveAI();
 
 private:
-    int minimax(int depth, bool isMaximizing);
+    static QList<QList<int>> findWinSeqs();
+
+    bool isWinSeq(const QList<int> &seq) const;
+    int minimax(int depth, bool maximizeO);
 
     static const QList<QList<int>> WIN_SEQS;
-    QList<SquareIcon> &board;
+    static QList<SquareIcon> &board;
+
+    SquareIcon winner;
+    const QList<int> *winSeq{nullptr};
+    bool roundEnded{false};
 };
