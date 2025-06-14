@@ -11,7 +11,7 @@ Download the latest release: https://github.com/HenryZhao2020/Tic-Tac-Toe/releas
 
 To prevent conflicts from multiple instances, this application uses [`SingleApplication`](https://github.com/itay-grudev/SingleApplication) by [itay-grudev](https://github.com/itay-grudev), ensuring only one instance of the game can be launched at a time.
 
----
+
 
 ### Screenshots
 
@@ -23,4 +23,3 @@ To prevent conflicts from multiple instances, this application uses [`SingleAppl
 | Settings          | ![](Screenshots/Settings_Light.png)        | ![](Screenshots/Settings_Dark.png)        |
 | About             | ![](Screenshots/About_Light.png)           | ![](Screenshots/About_Dark.png)           |
 
----
