@@ -6,39 +6,37 @@ class Game;
 class GameBar;
 class Square;
 class GameAI;
-
 enum class SquareIcon;
 
 /**
  * @brief Displays a 3x3 Tic-Tac-Toe board and handles user interaction.
- *
- * Manages the visual layout and state of the game board, including rendering
- * square icons (X, O, or empty) and processing player input.
- * Integrates with the main game logic to update board state and notify
- * other components of player moves.
  */
 class Board : public QFrame {
     Q_OBJECT
 
 public:
+    static constexpr int TURN_DELAY{500};
+
     explicit Board(Game *game);
     ~Board();
 
-    void place(int i, const QIcon &icon, bool animated);
+    void place(int i, SquareIcon icon, bool animated);
     void placeX(int i);
-    void placeO(int i = -1);
-    void setFrozen(bool frozen);
-    bool isFrozen();
+    void placeO(int i = AI_MOVE);
+    bool isFrozen() const;
 
 private:
-    bool isRoundEnded();
+    void setFrozen(bool frozen);
     void endRound();
+    void graySquares();
+    void displayWinner();
 
-    static GameAI ai;
+    static constexpr int AI_MOVE{-1};
+    static constexpr int NEXT_ROUND_DELAY{4000};
 
-    Game *game;
-    GameBar *gameBar;
-    Square *squares[9];
-    SquareIcon winner;
-    bool frozen;
+    Game *game{nullptr};
+    GameBar *gameBar{nullptr};
+    Square **squares{nullptr};
+    GameAI *ai{nullptr};
+    bool frozen{false};
 };
