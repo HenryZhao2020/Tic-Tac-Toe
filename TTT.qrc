@@ -13,14 +13,14 @@
         <file>Tie.svg</file>
         <file>Win.svg</file>
         <file>X.svg</file>
+        <file>TTT_Logo.png</file>
+        <file>X_Gray.svg</file>
+        <file>O_Gray.svg</file>
     </qresource>
     <qresource prefix="/conf">
         <file>Styles.qss</file>
     </qresource>
     <qresource prefix="/help">
-        <file>About.html</file>
-        <file>About_zh_CN.html</file>
-        <file>About_zh_TW.html</file>
         <file>Rules.html</file>
         <file>Rules_zh_CN.html</file>
         <file>Rules_zh_TW.html</file>
