@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" width="512" height="512" x="0" y="0" viewBox="0 0 24 24" xml:space="preserve" class="" style="enable-background:new 0 0 512 512">
+  <g transform="matrix(1.4000000000000015,0,0,1.4000000000000015,-4.800000953674326,-4.8003335952758945)">
+    <path fill="#888888" d="M20.132 17.304 6.696 3.868a1.5 1.5 0 0 0-2.121 0l-.707.707a1.5 1.5 0 0 0 0 2.121l13.436 13.436a1.5 1.5 0 0 0 2.121 0l.707-.707a1.5 1.5 0 0 0 0-2.121z" data-original="#f44336" class=""></path>
+    <path fill="#888888" d="M17.304 3.868 3.868 17.304a1.5 1.5 0 0 0 0 2.121l.707.707a1.5 1.5 0 0 0 2.121 0L20.132 6.696a1.5 1.5 0 0 0 0-2.121l-.707-.707a1.5 1.5 0 0 0-2.121 0z" data-original="#f44336" class=""></path>
+    <g fill="#888888">
+      <path d="M5.636 3.429c-.384 0-.768.146-1.061.439l-.707.707a1.5 1.5 0 0 0 0 2.121L9.172 12 12 9.172 6.696 3.868a1.491 1.491 0 0 0-1.06-.439z" fill="#888888" data-original="#d43a2f" class=""></path>
+      <path d="M12 9.172 9.172 12l-5.304 5.304a1.5 1.5 0 0 0 0 2.121l.707.707a1.496 1.496 0 0 0 2.121 0L12 14.828z" fill="#888888" data-original="#d43a2f" class=""></path>
+    </g>
+  </g>
+</svg>
