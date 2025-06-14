@@ -2,6 +2,7 @@
 
 #include <QString>
 #include <QIcon>
+#include <QMap>
 
 /**
  * @brief Utility functions for reading files.
@@ -34,22 +35,10 @@ public:
     static const QIcon &load(const QString &path);
 
     /**
-     * @brief Loads a grayscaled version of the icon from the given path with caching.
-     *
-     * If a grayscale version of the icon has been generated previously,
-     * the cached version is returned.
-     *
-     * @param path The file path of the icon.
-     * @return A const reference to the grayscaled (and possibly cached) QIcon.
-     */
-    static const QIcon &gray(const QString &path);
-
-    /**
      * @brief Clears icon cache to free up memory.
      */
-    void clearCache();
+    static void clearCache();
 
 private:
-    static QHash<QString, QIcon> iconCache;
-    static QHash<QString, QIcon> grayCache;
+    static QMap<QString, QIcon> cache;
 };
