@@ -4,7 +4,6 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
-#include <QTimer>
 
 class Game;
 
@@ -30,13 +29,9 @@ public:
 private:
     template<typename Callable>
     QPushButton *newMenuButton(const QIcon &icon, const QString &tip, const Callable &call);
-    void typewriteInfo(const QString &text);
 
     QHBoxLayout *barLayout;
     QPushButton *iconButton;
     QLabel *infoLabel;
     QPushButton *restartButton;
-
-    QTimer *infoTimer = nullptr;
-    int infoLength;
 };

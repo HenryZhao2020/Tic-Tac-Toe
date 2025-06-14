@@ -3,40 +3,33 @@
 #include "Dialog.h"
 #include "Game.h"
 #include "GameUtil.h"
+#include "Animation.h"
 
-GameBar::GameBar(Game *game) : QFrame(game) {
-    barLayout = new QHBoxLayout(this);
+GameBar::GameBar(Game *game)
+    : QFrame{game}, barLayout{new QHBoxLayout{this}},
+      iconButton{new QPushButton{this}}, infoLabel{new QLabel{this}} {
     barLayout->setSpacing(5);
     barLayout->setContentsMargins(0, 0, 0, 0);
-
-    iconButton = new QPushButton(this);
     barLayout->addWidget(iconButton);
     barLayout->addSpacing(2);
-
-    infoLabel = new QLabel(this);
     barLayout->addWidget(infoLabel);
     barLayout->addStretch();
 
-    restartButton = newMenuButton(IconUtil::load(":/icons/Restart.svg"), tr("Restart"), [game] {
-        game->restart();
-    });
+    restartButton = newMenuButton(IconUtil::load(":/icons/Restart.svg"), tr("New Round"),
+                                  [game] { game->restart(); });
 
     newMenuButton(IconUtil::load(":/icons/Settings.svg"), tr("Settings"), [game] {
-        auto dialog = new SettingsDialog(game);
+        auto dialog = new SettingsDialog{game};
         dialog->show();
     });
 
-    newMenuButton(IconUtil::load(":/icons/Help.svg"), tr("Help"), [game] {
-        auto dialog = new HelpDialog(game);
+    newMenuButton(IconUtil::load(":/icons/Help.svg"), tr("About"), [game] {
+        auto dialog = new AboutDialog{game};
         dialog->show();
     });
 }
 
-GameBar::~GameBar() {
-    if (infoTimer != nullptr) {
-        infoTimer->deleteLater();
-    }
-}
+GameBar::~GameBar() {}
 
 void GameBar::setInfoIcon(const QIcon &icon) {
     iconButton->setIcon(icon);
@@ -49,7 +42,8 @@ void GameBar::setInfoText(const QString &text) {
     }
 
     if (Attr::getSettings().animated) {
-        typewriteInfo(text);
+        static TextAnimation animator(infoLabel);
+        animator.typewrite(text);
     } else {
         infoLabel->setText(text);
     }
@@ -65,30 +59,10 @@ void GameBar::setRestartEnabled(bool enabled) {
     restartButton->setVisible(enabled);
 }
 
-void GameBar::typewriteInfo(const QString &text) {
-    if (infoTimer != nullptr) {
-        infoTimer->deleteLater();
-    }
-    infoLength = 0;
-    infoLabel->setText("");
-
-    infoTimer = new QTimer(this);
-    connect(infoTimer, &QTimer::timeout, this, [this, text] {
-        if (infoLength >= text.size()) {
-            infoTimer->deleteLater();
-            infoTimer = nullptr;
-            return;
-        }
-
-        infoLabel->setText(text.first(++infoLength));
-    });
-    infoTimer->start(20);
-}
-
 template<typename Callable>
 QPushButton *GameBar::newMenuButton(
     const QIcon &icon, const QString &tip, const Callable &call) {
-    auto button = new QPushButton(icon, "", this);
+    auto button = new QPushButton{icon, "", this};
     button->setToolTip(tip);
     button->setCursor(Qt::PointingHandCursor);
     connect(button, &QPushButton::clicked, this, call);
