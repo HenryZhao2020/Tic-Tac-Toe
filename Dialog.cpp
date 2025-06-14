@@ -5,145 +5,184 @@
 #include "Game.h"
 #include "GameBar.h"
 #include "ScoreBoard.h"
+#include "AppInfo.h"
 
-#include <QFile>
-#include <QFrame>
 #include <QGroupBox>
+#include <QTextBrowser>
+#include <QFile>
 #include <QProcess>
+#include <QShortcut>
+#include <QDesktopServices>
 
 Dialog::Dialog(Game *game, const QIcon &icon, const QString &title)
-    : QDialog(game), game{game} {
+    : QDialog{game}, game{game}, mainFrame{new QFrame{this}},
+      okButton{new QPushButton{tr("OK"), this}} {
     setWindowIcon(icon);
     setWindowTitle(title);
     setModal(true);
     setAttribute(Qt::WA_DeleteOnClose);
 
-    mainLayout = new QVBoxLayout(this);
+    auto mainLayout = new QVBoxLayout{this};
     mainLayout->setSpacing(30);
     mainLayout->setContentsMargins(30, 30, 30, 30);
+    mainLayout->addWidget(mainFrame);
 
-    auto buttonFrame = new QFrame(this);
+    auto buttonFrame = new QFrame{this};
     mainLayout->addSpacing(30);
     mainLayout->addWidget(buttonFrame, 0, Qt::AlignCenter);
 
-    buttonLayout = new QHBoxLayout(buttonFrame);
+    connect(okButton, &QPushButton::clicked, this, &Dialog::close);
+
+    buttonLayout = new QHBoxLayout{buttonFrame};
     buttonLayout->setSpacing(10);
     buttonLayout->setContentsMargins(0, 0, 0, 0);
-
-    okButton = new QPushButton(tr("OK"), this);
-    connect(okButton, &QPushButton::clicked, this, &Dialog::close);
     buttonLayout->addWidget(okButton);
+
+    // Use <Cmd+W> to close window in macOS
+    auto *closeShortcut = new QShortcut{QKeySequence::Close, this};
+    connect(closeShortcut, &QShortcut::activated, this, &Dialog::close);
 }
 
 Dialog::~Dialog() {}
+
+void Dialog::show() {
+    setFixedSize(sizeHint());
+    QDialog::show();
+}
 
 void Dialog::keyPressEvent(QKeyEvent *event) {
     if (event->key() == Qt::Key_Escape) {
         deleteLater();
     }
-
     QDialog::keyPressEvent(event);
 }
 
 SettingsDialog::SettingsDialog(Game *game)
-    : Dialog(game, IconUtil::load(":/icons/Settings.svg"), tr("Settings")) {
-    auto gameGroup = newGroup(tr("Game"));
-    addCheckBox(gameGroup, tr("Two Player Mode"), Attr::getSettings().twoPlayer);
-    addCheckBox(gameGroup, tr("Enable Visual Effects"), Attr::getSettings().animated);
-    addCheckBox(gameGroup, tr("Display Scores on Bottom"), Attr::getSettings().showScores);
+    : Dialog{game, IconUtil::load(":/icons/Settings.svg"), tr("Settings")},
+      settingsLayout{new QVBoxLayout{mainFrame}},
+      langBox{new QComboBox{this}}, resetBox{new QComboBox{this}} {
+    settingsLayout->setSpacing(15);
 
-    langBox = new QComboBox(this);
-    langBox->addItems(Lang::getLangNames());
-    langBox->setCurrentIndex(Attr::getSettings().lang);
+    auto gameGroup = newGroup(tr("Game"));
+    addCheckBox(gameGroup, tr("Two player mode"), Attr::getSettings().twoPlayer);
+    addCheckBox(gameGroup, tr("Enable game animation"), Attr::getSettings().animated);
+    addCheckBox(gameGroup, tr("Display scores on bottom"), Attr::getSettings().showScores);
 
     auto langGroup = newGroup(tr("Language"));
+    for (const Lang &lang : LangUtil::getLanguages()) {
+        langBox->addItem(LangUtil::getLangName(lang));
+    }
+    langBox->setCurrentIndex(static_cast<int>(Attr::getSettings().lang));
     langGroup->addWidget(langBox);
 
-    resetBox = new QComboBox(this);
-    resetBox->addItem(tr("Don't Reset"));
-    resetBox->addItem(tr("Reset Everything"));
-    resetBox->addItem(tr("Reset Settings"));
-    resetBox->addItem(tr("Reset Points"));
+    resetBox->addItems({DO_NOT_RESET, RESET_EVERYTHING, RESET_SETTINGS, RESET_POINTS});
     buttonLayout->insertWidget(0, resetBox);
-    buttonLayout->insertStretch(1);
 
     connect(okButton, &QPushButton::clicked, this, &SettingsDialog::applySettings);
 
-    auto cancelButton = new QPushButton(tr("Cancel"), this);
+    auto cancelButton = new QPushButton{tr("Cancel"), this};
     connect(cancelButton, &QPushButton::clicked, this, &Dialog::close);
     buttonLayout->addWidget(cancelButton);
-
-    setFixedSize(sizeHint());
 }
 
 SettingsDialog::~SettingsDialog() {}
 
 QVBoxLayout *SettingsDialog::newGroup(const QString &title) {
-    auto group = new QGroupBox(title, this);
-    mainLayout->insertWidget(mainLayout->count() - 2, group);
+    auto group = new QGroupBox{title, this};
+    settingsLayout->addWidget(group);
 
-    auto groupLayout = new QVBoxLayout(group);
+    auto groupLayout = new QVBoxLayout{group};
     groupLayout->setSpacing(10);
     groupLayout->setContentsMargins(20, 20, 20, 20);
     return groupLayout;
 }
 
 void SettingsDialog::addCheckBox(QLayout *layout, const QString &text, bool &state) {
-    auto box = new QCheckBox(text, this);
+    auto box = new QCheckBox{text, this};
     box->setChecked(state);
-    boxes.insert(box, &state);
+    checkBoxes.insert(box, &state);
     layout->addWidget(box);
 }
 
 void SettingsDialog::applySettings() {
-    for (auto it = boxes.begin(); it != boxes.end(); ++it) {
+    for (auto it = checkBoxes.begin(); it != checkBoxes.end(); ++it) {
         *it.value() = it.key()->isChecked();
     }
 
-    int resetIndex = resetBox->currentIndex();
-    if (resetIndex == 1) {
+    const QString resetOption{resetBox->currentText()};
+    if (resetOption == RESET_EVERYTHING) {
         qApp->quit();
         QFile::remove("TTT_Data");
         QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
-    } else if (resetIndex == 2) {
+    } else if (resetOption == RESET_SETTINGS) {
         Attr::resetSettings();
-    } else if (resetIndex == 3) {
+    } else if (resetOption == RESET_POINTS) {
         Attr::resetStats();
         game->getScoreBoard()->updateValues();
     }
 
-    game->resumeRound();
+    if (!Attr::getProgress().ended) {
+        game->resumeRound();
+    }
 
+    // Show/Hide score board
     game->getScoreBoard()->updateHeaders();
     game->getScoreBoard()->setVisible(Attr::getSettings().showScores);
     game->centralWidget()->adjustSize();
     game->setFixedSize(game->sizeHint());
 
-    int oldLang = Attr::getSettings().lang;
-    int newLang = langBox->currentIndex();
-    Attr::getSettings().lang = Lang::Name(newLang);
-
+    // Apply language
+    const Lang oldLang{Attr::getSettings().lang};
+    const Lang newLang{langBox->currentIndex()};
+    Attr::getSettings().lang = newLang;
     if (newLang != oldLang) {
         qApp->quit();
         QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
     }
 }
 
-HelpDialog::HelpDialog(Game *game)
-    : Dialog(game, IconUtil::load(":/icons/Help.svg"), tr("Help")) {
-    auto tabWidget = new QTabWidget(this);
-    tabWidget->addTab(newBrowser(":/help/" + tr("Rules.html")), tr("Rules"));
-    tabWidget->addTab(newBrowser(":/help/" + tr("About.html")), tr("About"));
-    mainLayout->insertWidget(0, tabWidget);
+AboutDialog::AboutDialog(Game *game)
+    : Dialog{game, IconUtil::load(":/icons/Help.svg"), tr("About") + " " + AppInfo::name()} {
+    auto sideLayout = new QHBoxLayout{mainFrame};
+    sideLayout->setSpacing(40);
+    sideLayout->addWidget(createInfoFrame());
 
-    setFixedSize(sizeHint());
+    auto helpPage = new QTextBrowser{this};
+    helpPage->setHtml(AppInfo::description());
+    sideLayout->addWidget(helpPage);
 }
 
-HelpDialog::~HelpDialog() {}
+AboutDialog::~AboutDialog() {}
 
-QTextBrowser *HelpDialog::newBrowser(const QString &path) {
-    auto browser = new QTextBrowser(this);
-    browser->setHtml(FileUtil::readAll(path));
-    browser->setOpenExternalLinks(true);
-    return browser;
+QFrame *AboutDialog::createInfoFrame() {
+    auto infoFrame = new QFrame{this};
+    auto infoLayout = new QVBoxLayout{infoFrame};
+    infoLayout->setSpacing(8);
+
+    auto logoButton = new QPushButton{this};
+    logoButton->setIcon(AppInfo::icon());
+    logoButton->setIconSize(QSize{180, 180});
+    logoButton->setObjectName("borderless");
+    infoLayout->addWidget(logoButton, 0, Qt::AlignCenter);
+
+    auto titleLabel = new QLabel{AppInfo::name(), this};
+    titleLabel->setObjectName("title");
+    infoLayout->addWidget(titleLabel, 0, Qt::AlignCenter);
+
+    auto versionLabel = new QLabel{tr("Version") + ": " + AppInfo::version(), this};
+    infoLayout->addWidget(versionLabel, 0, Qt::AlignCenter);
+
+    auto devLabel = new QLabel{tr("Developer") + ": " + AppInfo::developer(), this};
+    infoLayout->addWidget(devLabel, 0, Qt::AlignCenter);
+
+    auto linkButton = new QPushButton{tr("Visit my GitHub"), this};
+    linkButton->setObjectName("link");
+    linkButton->setCursor(Qt::PointingHandCursor);
+    connect(linkButton, &QPushButton::clicked, []() {
+        QDesktopServices::openUrl(AppInfo::github());
+    });
+    infoLayout->addWidget(linkButton, 0, Qt::AlignCenter);
+    infoLayout->addStretch();
+
+    return infoFrame;
 }
