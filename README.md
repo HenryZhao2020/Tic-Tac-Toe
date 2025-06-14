@@ -7,6 +7,8 @@ An elegant, cross-platform Tic Tac Toe game developed using **C++ and Qt**. It f
 - macOS 11+ (Apple Silicon)
 - Linux systems with Qt 6 support
 
+Download the latest release: https://github.com/HenryZhao2020/Tic-Tac-Toe/releases/latest
+
 To prevent conflicts from multiple instances, this application uses [`SingleApplication`](https://github.com/itay-grudev/SingleApplication) by [itay-grudev](https://github.com/itay-grudev), ensuring only one instance of the game can be launched at a time.
 
 ---
