@@ -2,42 +2,69 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="zh_TW">
 <context>
+    <name>AboutDialog</name>
+    <message>
+        <source>Tic Tac Toe</source>
+        <translation type="obsolete">井字棋</translation>
+    </message>
+    <message>
+        <location filename="Dialog.cpp" line="145"/>
+        <source>About</source>
+        <translation>關於</translation>
+    </message>
+    <message>
+        <location filename="Dialog.cpp" line="172"/>
+        <source>Version</source>
+        <translation>版本</translation>
+    </message>
+    <message>
+        <location filename="Dialog.cpp" line="175"/>
+        <source>Developer</source>
+        <translation>開發者</translation>
+    </message>
+    <message>
+        <location filename="Dialog.cpp" line="178"/>
+        <source>Visit my GitHub</source>
+        <translation>造訪我的 GitHub</translation>
+    </message>
+</context>
+<context>
     <name>Board</name>
     <message>
-        <location filename="Board.cpp" line="90"/>
+        <location filename="Board.cpp" line="67"/>
         <source>O&apos;s turn</source>
-        <translation>輪到O了</translation>
+        <translation>輪到 O 了</translation>
     </message>
     <message>
-        <location filename="Board.cpp" line="116"/>
+        <location filename="Board.cpp" line="87"/>
         <source>X&apos;s turn</source>
-        <translation>輪到X了</translation>
+        <translation>輪到 X 了</translation>
     </message>
     <message>
-        <location filename="Board.cpp" line="159"/>
+        <location filename="Board.cpp" line="129"/>
         <source>The winner is X!</source>
-        <translation>贏家是X！</translation>
+        <translation>贏家是 X！</translation>
     </message>
     <message>
-        <location filename="Board.cpp" line="164"/>
+        <location filename="Board.cpp" line="134"/>
         <source>The winner is O!</source>
-        <translation>贏家是O！</translation>
+        <translation>贏家是 O！</translation>
     </message>
     <message>
-        <location filename="Board.cpp" line="168"/>
+        <location filename="Board.cpp" line="138"/>
         <source>Tie!</source>
-        <translation>平局！</translation>
+        <translation>平手！</translation>
     </message>
     <message>
-        <location filename="Board.cpp" line="176"/>
+        <location filename="Board.cpp" line="146"/>
         <source>Click any square to restart...</source>
-        <translation>點擊任何方塊重新開始遊戲...</translation>
+        <translation>點擊任何方格重新開始遊戲……</translation>
     </message>
 </context>
 <context>
     <name>Dialog</name>
     <message>
-        <location filename="Dialog.cpp" line="34"/>
+        <location filename="Dialog.cpp" line="19"/>
         <source>OK</source>
         <translation>確定</translation>
     </message>
@@ -45,70 +72,85 @@
 <context>
     <name>Game</name>
     <message>
-        <location filename="Game.cpp" line="11"/>
         <source>Tic Tac Toe</source>
-        <translation>井字棋</translation>
+        <translation type="vanished">井字棋</translation>
     </message>
     <message>
-        <location filename="Game.cpp" line="22"/>
+        <location filename="Game.cpp" line="27"/>
         <source>Click a square to begin...</source>
-        <translation>點擊一個方塊開始遊戲...</translation>
+        <translation>點擊一個方格開始遊戲……</translation>
     </message>
     <message>
-        <location filename="Game.cpp" line="89"/>
+        <location filename="Game.cpp" line="115"/>
         <source>X&apos;s turn</source>
-        <translation>輪到X了</translation>
+        <translation>輪到 X 了</translation>
     </message>
     <message>
-        <location filename="Game.cpp" line="89"/>
+        <location filename="Game.cpp" line="115"/>
         <source>O&apos;s turn</source>
-        <translation>輪到O了</translation>
+        <translation>輪到 O 了</translation>
     </message>
 </context>
 <context>
     <name>GameBar</name>
     <message>
-        <location filename="GameBar.cpp" line="20"/>
         <source>Restart</source>
-        <translation>重啟</translation>
+        <translation type="vanished">重新開始</translation>
     </message>
     <message>
-        <location filename="GameBar.cpp" line="23"/>
+        <location filename="GameBar.cpp" line="18"/>
+        <source>New Round</source>
+        <translation>再來一局</translation>
+    </message>
+    <message>
+        <location filename="GameBar.cpp" line="21"/>
         <source>Settings</source>
-        <translation>設置</translation>
+        <translation>設定</translation>
     </message>
     <message>
-        <location filename="GameBar.cpp" line="29"/>
+        <location filename="GameBar.cpp" line="26"/>
+        <source>About</source>
+        <translation>關於</translation>
+    </message>
+    <message>
         <source>Help</source>
-        <translation>幫助</translation>
+        <translation type="vanished">說明</translation>
     </message>
 </context>
 <context>
     <name>HelpDialog</name>
     <message>
-        <location filename="Dialog.cpp" line="136"/>
         <source>Help</source>
-        <translation>幫助</translation>
+        <translation type="vanished">說明</translation>
     </message>
     <message>
-        <location filename="Dialog.cpp" line="138"/>
         <source>Rules.html</source>
-        <translation>Rules_zh_TW.html</translation>
+        <translation type="vanished">Rules_zh_TW.html</translation>
     </message>
     <message>
-        <location filename="Dialog.cpp" line="138"/>
         <source>Rules</source>
-        <translation>規則</translation>
+        <translation type="vanished">規則</translation>
     </message>
     <message>
-        <location filename="Dialog.cpp" line="139"/>
         <source>About.html</source>
-        <translation>About_zh_TW.html</translation>
+        <translation type="vanished">About_zh_TW.html</translation>
     </message>
     <message>
-        <location filename="Dialog.cpp" line="139"/>
         <source>About</source>
-        <translation>關於</translation>
+        <translation type="vanished">關於</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="AppInfo.cpp" line="7"/>
+        <source>Tic Tac Toe</source>
+        <translation>井字棋</translation>
+    </message>
+    <message>
+        <location filename="AppInfo.cpp" line="23"/>
+        <source>:/help/Rules.html</source>
+        <translation>:/help/Rules_zh_TW.html</translation>
     </message>
 </context>
 <context>
@@ -116,7 +158,7 @@
     <message>
         <location filename="ScoreBoard.cpp" line="17"/>
         <source>TIE</source>
-        <translation>平局</translation>
+        <translation>平手</translation>
     </message>
     <message>
         <location filename="ScoreBoard.cpp" line="40"/>
@@ -136,67 +178,65 @@
     <message>
         <location filename="ScoreBoard.cpp" line="41"/>
         <source>AI</source>
-        <translation></translation>
+        <translation>電腦</translation>
     </message>
 </context>
 <context>
     <name>SettingsDialog</name>
     <message>
-        <location filename="Dialog.cpp" line="50"/>
+        <location filename="Dialog.cpp" line="61"/>
         <source>Settings</source>
-        <translation>設置</translation>
+        <translation>設定</translation>
     </message>
     <message>
-        <location filename="Dialog.cpp" line="51"/>
+        <location filename="Dialog.cpp" line="66"/>
         <source>Game</source>
         <translation>遊戲</translation>
     </message>
     <message>
-        <location filename="Dialog.cpp" line="52"/>
-        <source>Two Player Mode</source>
+        <location filename="Dialog.cpp" line="67"/>
+        <source>Two player mode</source>
         <translation>雙人模式</translation>
     </message>
     <message>
-        <location filename="Dialog.cpp" line="53"/>
-        <source>Enable Visual Effects</source>
-        <oldsource>Enable Animation</oldsource>
-        <translation>啟用視覺效果</translation>
+        <location filename="Dialog.cpp" line="68"/>
+        <source>Enable game animation</source>
+        <translation>啟用遊戲動畫</translation>
     </message>
     <message>
-        <location filename="Dialog.cpp" line="54"/>
-        <source>Display Scores on Bottom</source>
+        <location filename="Dialog.cpp" line="69"/>
+        <source>Display scores on bottom</source>
         <translation>在底部顯示分數</translation>
     </message>
     <message>
-        <location filename="Dialog.cpp" line="62"/>
+        <location filename="Dialog.cpp" line="71"/>
         <source>Language</source>
         <translation>語言</translation>
     </message>
     <message>
-        <location filename="Dialog.cpp" line="66"/>
-        <source>Don&apos;t Reset</source>
-        <oldsource>Reset Nothing</oldsource>
-        <translation>不要重置</translation>
-    </message>
-    <message>
-        <location filename="Dialog.cpp" line="67"/>
-        <source>Reset Everything</source>
-        <translation>重置所有內容</translation>
-    </message>
-    <message>
-        <location filename="Dialog.cpp" line="68"/>
-        <source>Reset Settings</source>
-        <translation>重置設置</translation>
-    </message>
-    <message>
-        <location filename="Dialog.cpp" line="69"/>
-        <source>Reset Points</source>
-        <translation>重置分數</translation>
-    </message>
-    <message>
-        <location filename="Dialog.cpp" line="75"/>
+        <location filename="Dialog.cpp" line="83"/>
         <source>Cancel</source>
         <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="Dialog.h" line="46"/>
+        <source>Do not reset</source>
+        <translation>不要重設</translation>
+    </message>
+    <message>
+        <location filename="Dialog.h" line="47"/>
+        <source>Reset everything</source>
+        <translation>重設所有內容</translation>
+    </message>
+    <message>
+        <location filename="Dialog.h" line="48"/>
+        <source>Reset settings</source>
+        <translation>重設設定</translation>
+    </message>
+    <message>
+        <location filename="Dialog.h" line="49"/>
+        <source>Reset points</source>
+        <translation>重設分數</translation>
     </message>
 </context>
 </TS>
