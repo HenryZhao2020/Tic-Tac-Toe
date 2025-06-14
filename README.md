@@ -8,8 +8,7 @@ A cross-platform Tic Tac Toe game in C++/Qt with AI opponent (Minimax), internat
 
 |                   | Light Mode                   | Dark Mode                |
 | ----------------- | ---------------------------- | ------------------------ |
-| Start of the Game | ![[Screenshots/Game_Start_Light.png]]    | ![[Game_Start_Dark.png]] |
-| Game in Progress  | ![[Game_Progress_Light.png]] | ![[Game_Start_Dark.png]] |
-
+| Start of the Game | ![Alt text](Screenshots/Game_Start_Light.png)    | ![Alt text](Screenshots/Game_Start_Dark.png) |
+| Game in Progress  | ![Alt text](Screenshots/Game_Progress_Light.png) | ![Alt text](Screenshots/Game_Progress_Dark.png)) |
 
 ---
