@@ -5,47 +5,72 @@
 #include "GameBar.h"
 #include "ScoreBoard.h"
 #include "Square.h"
+#include "Dialog.h"
+#include "AppInfo.h"
 
 #include <QTimer>
+#include <QShortcut>
+#include <QMenuBar>
 
-Game::Game() {
-    setWindowTitle(tr("Tic Tac Toe"));
+Game::Game() : gameBar{new GameBar{this}}, board{new Board{this}},
+               scoreBoard{new ScoreBoard{this}} {
+    setWindowTitle(AppInfo::name());
 
-    auto mainWidget = new QWidget(this);
+    auto mainWidget = new QWidget{this};
     setCentralWidget(mainWidget);
 
-    mainLayout = new QVBoxLayout(mainWidget);
+    mainLayout = new QVBoxLayout{mainWidget};
     mainLayout->setSpacing(15);
     mainLayout->setContentsMargins(35, 35, 35, 35);
 
-    gameBar = new GameBar(this);
     gameBar->setInfoIcon(IconUtil::load(":/icons/Bell.svg"));
     gameBar->setInfoText(tr("Click a square to begin..."));
     gameBar->setRestartEnabled(false);
     mainLayout->addWidget(gameBar);
 
-    board = new Board(this);
     mainLayout->addWidget(board, 1, Qt::AlignCenter);
 
-    scoreBoard = new ScoreBoard(this);
     scoreBoard->updateHeaders();
     scoreBoard->updateValues();
     mainLayout->addWidget(scoreBoard, 0, Qt::AlignCenter);
 
-    setFixedSize(sizeHint());
+    // Use <Cmd+W> to close window in macOS
+    auto *closeShortcut = new QShortcut{QKeySequence::Close, this};
+    connect(closeShortcut, &QShortcut::activated, this, &QWidget::close);
+
+#ifdef Q_OS_MAC
+    // Create "About" action
+    auto aboutAction = new QAction{"About " + AppInfo::name(), this};
+    aboutAction->setMenuRole(QAction::AboutRole);
+    connect(aboutAction, &QAction::triggered, this, [this] {
+        auto dialog = new AboutDialog{this};
+        dialog->show();
+    });
+    // Add dummy menus to force proper layout
+    auto dummyMenu = menuBar()->addMenu("File");
+    // Will appear in macOS app menu instead of File
+    dummyMenu->addAction(aboutAction);
+#endif
 }
 
 Game::~Game() {}
 
-GameBar *Game::getGameBar() {
+void Game::show() {
+    setFixedSize(sizeHint());
+    setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(),
+                                    screen()->availableGeometry()));
+    QMainWindow::show();
+}
+
+GameBar *Game::getGameBar() const {
     return gameBar;
 }
 
-Board *Game::getBoard() {
+Board *Game::getBoard() const {
     return board;
 }
 
-ScoreBoard *Game::getScoreBoard() {
+ScoreBoard *Game::getScoreBoard() const {
     return scoreBoard;
 }
 
@@ -55,7 +80,7 @@ void Game::restart() {
     mainLayout->removeWidget(board);
     board->deleteLater();
 
-    board = new Board(this);
+    board = new Board{this};
     mainLayout->insertWidget(1, board, 1, Qt::AlignCenter);
 
     gameBar->setInfoIcon(IconUtil::load(":/icons/Bell.svg"));
@@ -70,10 +95,10 @@ void Game::loadSave() {
         return;
     }
 
-    for (int i = 0; i < 9; ++i) {
-        SquareIcon icon = Attr::getProgress().board[i];
-        if (icon != SquareIcon::EMPTY) {
-            board->place(i, Square::getIcon(icon), false);
+    for (int i = 0; i < BOARD_DIM * BOARD_DIM; ++i) {
+        const SquareIcon icon{Attr::getProgress().board[i]};
+        if (icon != SquareIcon::NONE) {
+            board->place(i, icon, false);
         }
     }
 
@@ -86,10 +111,10 @@ void Game::loadSave() {
 }
 
 void Game::resumeRound() {
-    bool xTurn = Attr::getProgress().xTurn;
+    const bool xTurn{Attr::getProgress().xTurn};
     gameBar->setInfoText(xTurn ? tr("X's turn") : tr("O's turn"));
 
     if (!xTurn && !Attr::getSettings().twoPlayer) {
-        QTimer::singleShot(500, this, [this] { board->placeO(); });
+        QTimer::singleShot(Board::TURN_DELAY, this, [this] { board->placeO(); });
     }
 }
