@@ -43,8 +43,6 @@ int main(int argc, char *argv[]) {
     SingleApplication app{argc, argv, true};
 #endif
 
-    QDir::setCurrent(app.applicationDirPath());
-
     app.setStyle("Fusion");
     app.setStyleSheet(FileUtil::readAll(":/conf/Styles.qss"));
     QObject::connect(&app, &QApplication::aboutToQuit, &Attr::saveAttr);
