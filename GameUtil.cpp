@@ -19,7 +19,7 @@ const QIcon &IconUtil::load(const QString &path) {
     if (it != cache.end()) {
         return it.value();
     }
-    return cache.insert(path, QIcon(path)).value();
+    return cache.insert(path, QIcon{path}).value();
 }
 
 void IconUtil::clearCache() {

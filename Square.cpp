@@ -21,7 +21,7 @@ const QIcon &Square::getIcon(SquareIcon icon, bool gray) {
     }
 }
 
-Square::Square(Board *board, int i) : QPushButton(board), animator{new IconAnimation{this}} {
+Square::Square(Board *board, int i) : QPushButton{board}, animator{new IconAnimation{this}} {
     setCursor(Qt::PointingHandCursor);
     connect(this, &Square::clicked, this, [board, i] {
         if (board->isFrozen()) {
@@ -47,7 +47,7 @@ void Square::placeIcon(SquareIcon icon, bool animated, bool gray) {
     if (animated) {
         animator->zoomIn(iconSize);
     } else {
-        setIconSize(QSize(iconSize, iconSize));
+        setIconSize(QSize{iconSize, iconSize});
     }
 }
 
