@@ -2,10 +2,6 @@
     font: 14px Montserrat Alternates, ZCOOL KuaiLe;
 }
 
-QMainWindow, QDialog {
-    background: palette(base);
-}
-
 GameBar QPushButton {
     border: 0;
     qproperty-iconSize: 24px 24px;
