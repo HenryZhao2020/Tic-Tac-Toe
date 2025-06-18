@@ -8,12 +8,12 @@
  */
 class AppInfo {
 public:
-    static QString name();
+    static const QString &name();
     static const QIcon &icon();
-    static QString version();
-    static QString developer();
-    static QString description();
-    static QString github();
+    static const QString &version();
+    static const QString &developer();
+    static const QString &description();
+    static const QString &github();
 
 private:
     AppInfo() = delete;     // Prevent instantiation

@@ -3,26 +3,32 @@
 
 #include <QObject>
 
-QString AppInfo::name() {
-    return QObject::tr("Tic Tac Toe");
+const QString &AppInfo::name() {
+    static const QString name{QObject::tr("Tic Tac Toe")};
+    return name;
 }
 
 const QIcon &AppInfo::icon() {
-    return IconUtil::load(":/icons/TTT_Logo.png");
+    static const QIcon icon{IconUtil::load(":/icons/TTT_Logo.png")};
+    return icon;
 }
 
-QString AppInfo::version() {
-    return "3.1.0";
+const QString &AppInfo::version() {
+    static const QString ver{"3.1.0"};
+    return ver;
 }
 
-QString AppInfo::developer() {
-    return "Henry Zhao";
+const QString &AppInfo::developer() {
+    static const QString dev{"Henry Zhao"};
+    return dev;
 }
 
-QString AppInfo::description() {
-    return FileUtil::readAll(QObject::tr(":/help/Rules.html"));
+const QString &AppInfo::description() {
+    static const QString desc{FileUtil::readAll(QObject::tr(":/help/Rules.html"))};
+    return desc;
 }
 
-QString AppInfo::github() {
-    return "https://github.com/HenryZhao2020/Tic-Tac-Toe";
+const QString &AppInfo::github() {
+    static const QString git{"https://github.com/HenryZhao2020/Tic-Tac-Toe"};
+    return git;
 }
