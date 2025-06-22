@@ -18,7 +18,6 @@ class Game : public QMainWindow {
 
 public:
     explicit Game();
-    ~Game();
 
     GameBar *getGameBar() const;
     Board *getBoard() const;

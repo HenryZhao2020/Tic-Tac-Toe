@@ -15,7 +15,6 @@ enum class SquareIcon;
 class GameAI {
 public:
     explicit GameAI();
-    ~GameAI();
 
     SquareIcon getWinner();
     const QList<int> *getWinSeq() const;

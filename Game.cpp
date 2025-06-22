@@ -53,8 +53,6 @@ Game::Game() : gameBar{new GameBar{this}}, board{new Board{this}},
 #endif
 }
 
-Game::~Game() {}
-
 void Game::show() {
     setFixedSize(sizeHint());
     setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(),

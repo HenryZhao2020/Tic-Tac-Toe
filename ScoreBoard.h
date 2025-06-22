@@ -14,7 +14,6 @@ class ScoreBoard : public QFrame {
 
 public:
     explicit ScoreBoard(Game *game);
-    ~ScoreBoard();
 
     void updateHeaders();
     void updateValues();

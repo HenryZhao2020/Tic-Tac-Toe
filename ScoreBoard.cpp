@@ -33,8 +33,6 @@ ScoreBoard::ScoreBoard(Game *game) : QFrame{game} {
     boardLayout->addWidget(oVal, 1, 2);
 }
 
-ScoreBoard::~ScoreBoard() {}
-
 void ScoreBoard::updateHeaders() {
     bool twoPlayer{Attr::getSettings().twoPlayer};
     xHead->setText(twoPlayer ? tr("PLAYER 1") : tr("YOU"));

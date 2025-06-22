@@ -6,8 +6,6 @@ const QList<QList<int>> GameAI::WIN_SEQS{findWinSeqs()};
 
 GameAI::GameAI() : winner{SquareIcon::NONE} {}
 
-GameAI::~GameAI() {}
-
 SquareIcon GameAI::getWinner() {
     if (roundEnded) return winner;
 

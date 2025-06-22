@@ -43,8 +43,6 @@ Dialog::Dialog(Game *game, const QIcon &icon, const QString &title)
     connect(closeShortcut, &QShortcut::activated, this, &Dialog::close);
 }
 
-Dialog::~Dialog() {}
-
 void Dialog::show() {
     setFixedSize(sizeHint());
     QDialog::show();
@@ -84,8 +82,6 @@ SettingsDialog::SettingsDialog(Game *game)
     connect(cancelButton, &QPushButton::clicked, this, &Dialog::close);
     buttonLayout->addWidget(cancelButton);
 }
-
-SettingsDialog::~SettingsDialog() {}
 
 QVBoxLayout *SettingsDialog::newGroup(const QString &title) {
     auto group = new QGroupBox{title, this};
@@ -151,8 +147,6 @@ AboutDialog::AboutDialog(Game *game)
     helpPage->setHtml(AppInfo::description());
     sideLayout->addWidget(helpPage);
 }
-
-AboutDialog::~AboutDialog() {}
 
 QFrame *AboutDialog::createInfoFrame() {
     auto infoFrame = new QFrame{this};

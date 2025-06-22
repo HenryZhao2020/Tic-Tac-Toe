@@ -29,8 +29,6 @@ GameBar::GameBar(Game *game)
     });
 }
 
-GameBar::~GameBar() {}
-
 void GameBar::setInfoIcon(const QIcon &icon) {
     iconButton->setIcon(icon);
     setInfoVisible(true);

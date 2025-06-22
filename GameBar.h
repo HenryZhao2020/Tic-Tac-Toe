@@ -19,7 +19,6 @@ class GameBar : public QFrame {
 
 public:
     explicit GameBar(Game *game);
-    ~GameBar();
 
     void setInfoIcon(const QIcon &icon);
     void setInfoText(const QString &text);

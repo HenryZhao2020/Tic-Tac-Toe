@@ -19,7 +19,6 @@ class Dialog : public QDialog {
 
 public:
     explicit Dialog(Game *game, const QIcon &icon, const QString &title);
-    ~Dialog();
 
     void show();
 
@@ -40,7 +39,6 @@ class SettingsDialog : public Dialog {
 
 public:
     explicit SettingsDialog(Game *game);
-    ~SettingsDialog();
 
 private:
     const QString DO_NOT_RESET{tr("Do not reset")};
@@ -66,7 +64,6 @@ class AboutDialog : public Dialog {
 
 public:
     explicit AboutDialog(Game *game);
-    ~AboutDialog();
 
 private:
     QFrame *createInfoFrame();
